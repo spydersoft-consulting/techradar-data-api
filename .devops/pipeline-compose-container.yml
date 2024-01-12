@@ -1,0 +1,141 @@
+variables:
+  - name: DOCKER_BUILDKIT
+    value: 0
+  - name: urls.techRadar
+    value: ""
+  - name: branchTag
+    ${{ if contains(variables['Build.SourceBranch'], 'main') }}:
+      value: main
+    ${{ if not(contains(variables['Build.SourceBranch'], 'main')) }}:    
+      value: feature
+
+resources:
+  webhooks:
+  - webhook: TechRadarPipelineTrigger          ### Webhook alias
+    connection: TechRadarPipelineTrigger    ### Incoming webhook service connection
+    filters:
+      - path: repositoryName      ### JSON path in the payload
+        value: techradar     ### Expected value in the path provided
+  pipelines:
+  - pipeline: ui
+    source: 'Technology Radar UI'
+    trigger:
+      branches:
+      - main
+  - pipeline: api
+    source: 'Technology Radar API'
+    trigger:
+      branches:
+      - main
+  repositories:
+    - repository: templates
+      type: github
+      endpoint: spydersoft-gh
+      name: spydersoft-consulting/azure-devops-templates
+    - repository: helmfileconfig
+      type: github
+      endpoint: spydersoft-gh
+      name: spyder007/ha-helm-config
+      
+trigger: none
+pr: none
+
+
+jobs:
+- job: buildImage
+  displayName: buildImage
+  pool:
+    name: Default
+    demands: agent.os -equals Linux
+
+  steps:
+  - task: Docker@2
+    displayName: Login to Proget Repository
+    inputs:
+      command: login
+      containerRegistry: proget_central
+    
+  - task: DownloadBuildArtifacts@0
+    displayName: "Get UI Artifact"
+    inputs:
+      buildType: 'specific' 
+      project: 'tools_eng_tech_radar' 
+      pipeline: 'Technology Radar UI' 
+      branchName: 'refs/heads/main' 
+      downloadType: 'single'
+      artifactName: 'techradar-ui-build'
+      downloadPath: '$(Pipeline.Workspace)' 
+
+  - task: ExtractFiles@1
+    inputs:
+      archiveFilePatterns: '$(Pipeline.Workspace)/techradar-ui-build/techradar-ui-build.zip' 
+      destinationFolder: $(Pipeline.Workspace)/techradar_ui
+      cleanDestinationFolder: true 
+
+  - task: FileTransform@1
+    displayName: Replace URL Variables
+    inputs:
+      folderPath: '$(Pipeline.Workspace)/techradar_ui/' 
+      fileType: json
+      targetFiles: config.json
+
+  - task: DownloadBuildArtifacts@0
+    displayName: "Get API Artifact"
+    inputs:
+      buildType: 'specific' 
+      project: 'tools_eng_tech_radar' 
+      pipeline: 'Technology Radar API' 
+      branchName: 'refs/heads/main' 
+      downloadType: 'single'
+      artifactName: 'tech_radar_api'
+      downloadPath: '$(Pipeline.Workspace)' 
+
+  - task: ExtractFiles@1
+    inputs:
+      archiveFilePatterns: '$(Pipeline.Workspace)/tech_radar_api/s.zip' 
+      destinationFolder: $(Pipeline.Workspace)/techradar_api
+      cleanDestinationFolder: true 
+
+
+  - task: Bash@3
+    displayName: Copy UI Files to build folder
+    inputs:
+      targetType: 'inline'
+      script: |
+        mkdir -p $(Pipeline.Workspace)/techradar_api/ClientApp/build
+        cp $(Pipeline.Workspace)/techradar_ui/* -r $(Pipeline.Workspace)/techradar_api/ClientApp/build
+        cp $(Build.SourcesDirectory)/Dockerfile $(Pipeline.Workspace)/techradar_api/Dockerfile
+
+  - task: Docker@2
+    displayName: Build Image
+    inputs:
+      command: 'build'
+      containerRegistry: proget_docker
+      repository: internal_tools/architecture/techradar
+      Dockerfile: '$(Pipeline.Workspace)/techradar_api/Dockerfile'
+      buildContext: '$(Pipeline.Workspace)/techradar_api'
+      tags: |
+        $(branchTag)-$(build.buildnumber)
+
+  - task: Docker@2
+    displayName: Push to Container Registry
+    condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/main'))
+    inputs:
+      containerRegistry: 'proget_docker'
+      repository: 'internal_tools/architecture/techradar'
+      command: 'push'
+      tags: '$(branchTag)-$(build.buildnumber)'
+
+- job: updateGitops
+  pool:
+    name: 'Scaled Pool - Ubuntu'
+  dependsOn:
+  - buildImage
+  condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/main'))
+  steps:
+  - template: publish/execute-cicd-script-in-repo/execute-cicd-script-in-repo-v1.yml@templates
+    parameters:
+      repositoryResource: gitops-repo
+      appName: acc-tech-radar
+      additionalArguments: '$(branchTag)-$(build.buildnumber)'
+      commitMessage: Updated acc-tech-radar appVersion to $(branchTag)-$(build.buildnumber)

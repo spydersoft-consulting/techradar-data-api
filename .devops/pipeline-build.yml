@@ -1,0 +1,48 @@
+resources:
+  repositories:
+    - repository: templates
+      type: github
+      endpoint: spydersoft-gh
+      name: spydersoft-consulting/azure-devops-templates
+
+trigger:
+  branches:
+    include:
+      - main
+      - feature/*
+  paths:
+    exclude:
+      - README.md
+      - Dockerfile
+
+pr: none
+ 
+stages:
+- stage: Build
+  jobs:
+  - job: BuildJob
+    workspace:
+      clean: all
+    pool:
+      name: Default
+      demands: agent.os -equals Linux
+    steps:
+    - template: step_collections/dotnet-api-build-steps.yml@templates
+      parameters:
+        buildProject: src/Spydersoft.TechRadar.Api.sln
+        publishProject: src/Spydersoft.TechRadar.Api.csproj
+        netCoreVersion: '8.0.x'
+        prebuildSteps: ${{ parameters.prebuildSteps }}
+        preTestSteps: ${{ parameters.preTestSteps }}
+        execute_sonar: false
+        #sonar_endpoint_name: ${{ parameters.sonar_endpoint_name }}
+        #sonar_project_key: ${{ parameters.sonar_project_key }}
+        #sonar_project_name: ${{ parameters.sonar_project_name }}
+        #execute_tests: ${{ parameters.execute_tests }}
+        #test_projects: ${{ parameters.test_projects }}
+        #use_sonarcloud: ${{ parameters.use_sonarcloud }}
+        #sonar_cloud_organization: ${{ parameters.sonar_cloud_organization }}
+
+    # this code takes all the files in $(Build.ArtifactStagingDirectory) and uploads them as an artifact of your pipeline.
+    - publish: '$(Build.ArtifactStagingDirectory)' 
+      artifact: 'techradar-api'
