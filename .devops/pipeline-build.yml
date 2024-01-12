@@ -32,8 +32,6 @@ stages:
         buildProject: src/Spydersoft.TechRadar.Api.sln
         publishProject: src/Spydersoft.TechRadar.Api.csproj
         netCoreVersion: '8.0.x'
-        prebuildSteps: ${{ parameters.prebuildSteps }}
-        preTestSteps: ${{ parameters.preTestSteps }}
         execute_sonar: false
         #sonar_endpoint_name: ${{ parameters.sonar_endpoint_name }}
         #sonar_project_key: ${{ parameters.sonar_project_key }}
