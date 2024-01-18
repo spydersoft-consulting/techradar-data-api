@@ -24,13 +24,14 @@ pr: none
 extends:
   template: pipelines/build-api/v1.yml@templates
   parameters:
-    buildProject: src/Spydersoft.TechRadar.Api.sln
-    publishProject: src/Spydersoft.TechRadar.Api.csproj
+    buildProject: src/Spydersoft.TechRadar.Data.Api/Spydersoft.TechRadar.Data.Api.sln
+    publishProject: src/Spydersoft.TechRadar.Data.Api.csproj
     netCoreVersion: '8.0.x'
     artifactName: techradarDataApi
-    artifactZipName: Spydersoft.TechRadar.Api
+    artifactZipName: Spydersoft.TechRadar.Data.Api
     dockerImageFileName: techradar_data_api
     dockerImageName: spydersoft/techradar/techradar_data_api
+    dockerFilePath: Dockerfile
     imageTagVariableName: techradar_data_api
     helmfileRepoName: helmfileconfig
     execute_sonar: false
