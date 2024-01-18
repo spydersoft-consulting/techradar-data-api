@@ -1,17 +1,4 @@
-﻿// ***********************************************************************
-// Assembly         : Spydersoft.TechRadar.Api
-// Author           : MGerega
-// Created          : 02-11-2019
-//
-// Last Modified By : MGerega
-// Last Modified On : 08-21-2019
-// ***********************************************************************
-// <copyright file="RadarItem.cs" company="Spydersoft.TechRadar.Api">
-//     Copyright (c) . All rights reserved.
-// </copyright>
-// <summary></summary>
-// ***********************************************************************
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;

@@ -10,7 +10,7 @@ namespace Spydersoft.TechRadar.Api.Controllers
     /// Implements the <see cref="Microsoft.AspNetCore.Mvc.ControllerBase" />
     /// </summary>
     /// <seealso cref="Microsoft.AspNetCore.Mvc.ControllerBase" />
-    [Authorize(Policy = "Writers")]
+    [Authorize()]
     public class EditControllerBase<TRadarDataItem> : DataControllerBase where TRadarDataItem : class, IRadarDataItem
     {
         /// <summary>
@@ -48,7 +48,10 @@ namespace Spydersoft.TechRadar.Api.Controllers
         [HttpPost("")]
         public void Post([FromBody] TRadarDataItem value)
         {
-            RadarDataItemService.SaveRadarDataItem(value, User);
+            if (ModelState.IsValid)
+            {
+                RadarDataItemService.SaveRadarDataItem(value, User);
+            }
         }
 
         /// <summary>
@@ -59,8 +62,11 @@ namespace Spydersoft.TechRadar.Api.Controllers
         [HttpPut("{id}")]
         public void Put(int id, [FromBody] TRadarDataItem value)
         {
-            value.Id = id;
-            RadarDataItemService.SaveRadarDataItem(value, User);
+            if (ModelState.IsValid)
+            {
+                value.Id = id;
+                RadarDataItemService.SaveRadarDataItem(value, User);
+            }
         }
     }
 }

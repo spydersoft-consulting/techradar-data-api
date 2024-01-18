@@ -1,18 +1,4 @@
-﻿// ***********************************************************************
-// Assembly         : Spydersoft.TechRadar.Api
-// Author           : MGerega
-// Created          : 02-11-2019
-//
-// Last Modified By : MGerega
-// Last Modified On : 08-21-2019
-// ***********************************************************************
-// <copyright file="TechRadarContext.cs" company="Spydersoft.TechRadar.Api">
-//     Copyright (c) . All rights reserved.
-// </copyright>
-// <summary></summary>
-// ***********************************************************************
-
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using System;
 using System.Collections.Generic;
@@ -129,10 +115,11 @@ namespace Spydersoft.TechRadar.Api.Data
         /// <returns>System.Int32.</returns>
         public int SaveChangesWithAudit(string? userId)
         {
-            if (userId == null)
+            if (userId is null)
             {
-                return 0;
+                return base.SaveChanges();
             }
+
             var auditEntries = OnBeforeSaveChanges(userId);
             var result = base.SaveChanges();
             OnAfterSaveChanges(auditEntries).Wait();

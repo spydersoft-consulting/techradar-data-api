@@ -1,17 +1,4 @@
-﻿// ***********************************************************************
-// Assembly         : Spydersoft.TechRadar.Api
-// Author           : MGerega
-// Created          : 02-11-2019
-//
-// Last Modified By : MGerega
-// Last Modified On : 08-21-2019
-// ***********************************************************************
-// <copyright file="Program.cs" company="Spydersoft.TechRadar.Api">
-//     Copyright (c) . All rights reserved.
-// </copyright>
-// <summary></summary>
-// ***********************************************************************
-using Microsoft.AspNetCore.Builder;
+﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Configuration;
 using System.IO;
 using System;

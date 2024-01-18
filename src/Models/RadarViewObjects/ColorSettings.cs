@@ -1,17 +1,4 @@
-﻿// ***********************************************************************
-// Assembly         : Spydersoft.TechRadar.Api
-// Author           : MGerega
-// Created          : 02-11-2019
-//
-// Last Modified By : MGerega
-// Last Modified On : 08-21-2019
-// ***********************************************************************
-// <copyright file="ColorSettings.cs" company="Spydersoft.TechRadar.Api">
-//     Copyright (c) . All rights reserved.
-// </copyright>
-// <summary></summary>
-// ***********************************************************************
-namespace Spydersoft.TechRadar.Api.Models.RadarViewObjects
+﻿namespace Spydersoft.TechRadar.Api.Models.RadarViewObjects
 {
     /// <summary>
     /// Class ColorSettings.

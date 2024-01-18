@@ -1,18 +1,4 @@
-﻿// ***********************************************************************
-// Assembly         : Spydersoft.TechRadar.Api
-// Author           : MGerega
-// Created          : 02-11-2019
-//
-// Last Modified By : MGerega
-// Last Modified On : 08-21-2019
-// ***********************************************************************
-// <copyright file="Startup.cs" company="Spydersoft.TechRadar.Api">
-//     Copyright (c) . All rights reserved.
-// </copyright>
-// <summary></summary>
-// ***********************************************************************
-
-using Spydersoft.TechRadar.Api.Data;
+﻿using Spydersoft.TechRadar.Api.Data;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -69,24 +55,8 @@ namespace Spydersoft.TechRadar.Api
             var identityOption = new IdentityOptions();
             Configuration.GetSection(IdentityOptions.SectionName).Bind(identityOption);
 
-            services.AddOpenTelemetry().ConfigureOpenTelemetry(telemetryOptions);                        
-
-            services.AddMvcCore().AddApiExplorer();
-           
-            services.AddDbContext<TechRadarContext>(
-                options => options.UseSqlServer(Configuration.GetConnectionString("TechRadarDatabase")));
-
-            services.AddScoped<IRadarService, RadarService>();
-            services.AddScoped<IRadarDataItemService, RadarDataItemService>();
-            services.AddScoped<ITagService, TagService>();
-
-            services.AddCors(options =>
-            {
-                options.AddPolicy("AllowAll",
-                    builder => builder.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod());
-            });
-
-
+            services.AddOpenTelemetry().ConfigureOpenTelemetry(telemetryOptions);
+            services.AddControllers();
             if (identityOption.Authority != null)
             {
                 services
@@ -111,7 +81,24 @@ namespace Spydersoft.TechRadar.Api
                             }
                         };
                     });
+
+                services.AddAuthorization();
             }
+
+            services.AddEndpointsApiExplorer();
+
+            services.AddDbContext<TechRadarContext>(
+                options => options.UseSqlServer(Configuration.GetConnectionString("TechRadarDatabase")));
+
+            services.AddScoped<IRadarService, RadarService>();
+            services.AddScoped<IRadarDataItemService, RadarDataItemService>();
+            services.AddScoped<ITagService, TagService>();
+
+            services.AddCors(options =>
+            {
+                options.AddPolicy("AllowAll",
+                    builder => builder.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod());
+            });
 
             services.AddSwaggerGen(c =>
             {
@@ -122,7 +109,7 @@ namespace Spydersoft.TechRadar.Api
                 c.IncludeXmlComments(xmlPath);
             });
 
-            services.AddSpaStaticFiles(configuration => { configuration.RootPath = "ClientApp/build"; });
+            
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -133,18 +120,19 @@ namespace Spydersoft.TechRadar.Api
         /// <param name="env">The env.</param>
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-            
-            if (env.IsDevelopment()) {
+            app.InitializeDatabase();
+
+            if (env.IsDevelopment())
+            {
                 app.UseCors("AllowAll");
             }
-            
+
             app.UseAuthentication()
                 .UseRouting()
                 .UseAuthorization()
                 .UseEndpoints(endpoints => endpoints.MapControllers())
                 .UseDefaultFiles()
-                .UseStaticFiles()
-                .UseSpaStaticFiles();
+                .UseStaticFiles();
 
             // Enable middleware to serve generated Swagger as a JSON endpoint.
             app.UseSwagger()
@@ -153,18 +141,7 @@ namespace Spydersoft.TechRadar.Api
                 c.SwaggerEndpoint("/swagger/v1/swagger.json", "Tech Radar API");
             });
 
-            app.UseSpa(spa =>
-            {
-                if (env.IsDevelopment())
-                {
-                    spa.UseProxyToSpaDevelopmentServer("http://localhost:3000");
-                }
-                else
-                {
-                    spa.Options.SourcePath = "ClientApp";
-                }
 
-            });
 
             IdentityModelEventSource.ShowPII = env.IsDevelopment();
             if (env.IsDevelopment())
@@ -175,7 +152,7 @@ namespace Spydersoft.TechRadar.Api
             {
                 app.UseHsts();
             }
-            
+
         }
     }
 }

@@ -1,6 +1,8 @@
-﻿using OpenTelemetry;
+﻿using Microsoft.AspNetCore.Builder;
+using OpenTelemetry;
 using OpenTelemetry.Metrics;
 using OpenTelemetry.Trace;
+using Spydersoft.TechRadar.Api.Data;
 using Spydersoft.TechRadar.Api.Options;
 using System;
 
@@ -11,6 +13,14 @@ namespace Spydersoft.TechRadar.Api.Configuration
     /// </summary>
     public static class StartupExtensions
     {
+        /// <summary>Initializes the database.</summary>
+        /// <param name="app">The application.</param>
+        public static void InitializeDatabase(this IApplicationBuilder app)
+        {
+            var databaseInitializer = new DatabaseInitializer(app);
+            databaseInitializer.InitializeDatabase();
+        }
+
         /// <summary>
         /// Configures the open telemetry.
         /// </summary>

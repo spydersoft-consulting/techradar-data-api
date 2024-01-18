@@ -1,18 +1,4 @@
-﻿// ***********************************************************************
-// Assembly         : Spydersoft.TechRadar.Api
-// Author           : MGerega
-// Created          : 02-11-2019
-//
-// Last Modified By : MGerega
-// Last Modified On : 08-21-2019
-// ***********************************************************************
-// <copyright file="Radar.cs" company="Spydersoft.TechRadar.Api">
-//     Copyright (c) . All rights reserved.
-// </copyright>
-// <summary></summary>
-// ***********************************************************************
-
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace Spydersoft.TechRadar.Api.Data
 {
@@ -31,6 +17,7 @@ namespace Spydersoft.TechRadar.Api.Data
         /// Gets or sets the title.
         /// </summary>
         /// <value>The title.</value>
+        [Required]
         [StringLength(maximumLength: 50, MinimumLength = 5)]
         public string Title { get; set; } = string.Empty;
 

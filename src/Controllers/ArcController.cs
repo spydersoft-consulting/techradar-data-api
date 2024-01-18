@@ -1,17 +1,4 @@
-﻿// ***********************************************************************
-// Assembly         : Spydersoft.TechRadar.Api
-// Author           : MGerega
-// Created          : 02-11-2019
-//
-// Last Modified By : MGerega
-// Last Modified On : 08-21-2019
-// ***********************************************************************
-// <copyright file="ArcController.cs" company="Spydersoft.TechRadar.Api">
-//     Copyright (c) . All rights reserved.
-// </copyright>
-// <summary></summary>
-// ***********************************************************************
-using Spydersoft.TechRadar.Api.Data;
+﻿using Spydersoft.TechRadar.Api.Data;
 using Spydersoft.TechRadar.Api.Services;
 using Microsoft.AspNetCore.Mvc;
 using RadarArc = Spydersoft.TechRadar.Api.Data.RadarArc;
