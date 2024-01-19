@@ -9,7 +9,7 @@
 		<PackageId>Spydersoft.TechRadar.Data.Api</PackageId>
 		<DefaultItemExcludes>$(DefaultItemExcludes);$(SpaRoot)node_modules\**</DefaultItemExcludes>
 		<Nullable>enable</Nullable>
-		<InvariantGlobalization>true</InvariantGlobalization>
+		<InvariantGlobalization>false</InvariantGlobalization>
 	</PropertyGroup>
 
 	<ItemGroup>
