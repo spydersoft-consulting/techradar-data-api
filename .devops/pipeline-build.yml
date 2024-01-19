@@ -30,7 +30,7 @@ extends:
     artifactName: techradarDataApi
     artifactZipName: Spydersoft.TechRadar.Data.Api
     dockerImageFileName: techradar_data_api
-    dockerImageName: spydersoft/techradar/techradar_data_api
+    dockerImageName: spydersoft/techradar/techradar.data.api
     dockerFilePath: Dockerfile
     imageTagVariableName: techradar_data_api
     helmfileRepoName: helmfileconfig
