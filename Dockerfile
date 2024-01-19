@@ -1,5 +1,5 @@
 # build runtime image
-FROM mcr.microsoft.com/dotnet/aspnet:8.0-jammy-chiseled as runtime
+FROM mcr.microsoft.com/dotnet/aspnet:8.0-jammy as runtime
 WORKDIR /app
 COPY . /app
 
