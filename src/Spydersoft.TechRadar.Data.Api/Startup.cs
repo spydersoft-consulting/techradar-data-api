@@ -18,6 +18,7 @@ using OpenTelemetry.Metrics;
 using OpenTelemetry.Trace;
 using Spydersoft.TechRadar.Data.Api.Configuration;
 using Spydersoft.TechRadar.Data.Api.Options;
+using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 
 namespace Spydersoft.TechRadar.Data.Api
 {
@@ -55,6 +56,7 @@ namespace Spydersoft.TechRadar.Data.Api
             var identityOption = new IdentityOptions();
             Configuration.GetSection(IdentityOptions.SectionName).Bind(identityOption);
 
+            services.AddHealthChecks();
             services.AddOpenTelemetry().ConfigureOpenTelemetry(telemetryOptions);
             services.AddControllers();
             if (identityOption.Authority != null)
@@ -129,6 +131,7 @@ namespace Spydersoft.TechRadar.Data.Api
 
             app.UseAuthentication()
                 .UseRouting()
+                .UseHealthChecks("/healthz", new HealthCheckOptions { Predicate = check => check.Tags.Contains("ready") })
                 .UseAuthorization()
                 .UseEndpoints(endpoints => endpoints.MapControllers())
                 .UseDefaultFiles()
