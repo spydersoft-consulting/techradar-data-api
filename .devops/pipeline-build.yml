@@ -5,10 +5,10 @@ resources:
       type: github
       endpoint: spydersoft-gh
       name: spydersoft-consulting/azure-devops-templates
-    # - repository: helmfileconfig
-    #   type: github
-    #   endpoint: spydersoft-gh
-    #   name: spyder007/techradar-helm-config
+    - repository: helmfileconfig
+      type: github
+      endpoint: spydersoft-gh
+      name: spyder007/techradar-helm-config
 
 trigger:
   branches:
@@ -32,10 +32,10 @@ extends:
     dockerImageFileName: techradar_data_api
     dockerImageName: spydersoft/techradar/techradar.data.api
     dockerFilePath: Dockerfile
-    imageTagVariableName: techradar_data_api
+    imageTagVariableName: data_api
     helmfileRepoName: helmfileconfig
     execute_sonar: false
-    updateHelmConfig: false
+    updateHelmConfig: true
     #sonar_endpoint_name: ${{ parameters.sonar_endpoint_name }}
     #sonar_project_key: ${{ parameters.sonar_project_key }}
     #sonar_project_name: ${{ parameters.sonar_project_name }}
