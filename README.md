@@ -16,8 +16,8 @@ The database connection string is defined by the **TechRadarDatabase** value in 
 
 You can setup your database connection in the project's **User Secrets**
 
-1. Open **Spydersoft.TechRadar.Api** in Visual Studio
-2. Right click on the **Spydersoft.TechRadar.Api** project and select **Manage User Secrets**
+1. Open **Spydersoft.TechRadar.Data.Api** in Visual Studio
+2. Right click on the **Spydersoft.TechRadar.Data.Api** project and select **Manage User Secrets**
 3. In the **secrets.json** file, add your override value:
 ```json
 {
