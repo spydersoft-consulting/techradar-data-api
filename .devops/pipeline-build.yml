@@ -38,8 +38,12 @@ extends:
     imageTagVariableName: data_api
     helmfileRepoName: helmfileconfig
     execute_sonar: false
-    updateHelmConfig: ne(variables['Build.Reason'], 'PullRequest')
-    buildAndPublishDockerImage: ne(variables['Build.Reason'], 'PullRequest')
+    ${{ if eq(variables['Build.Reason'], 'PullRequest') }}:
+      updateHelmConfig: false
+      buildAndPublishDockerImage: false
+    ${{ else }}:
+      updateHelmConfig: true
+      buildAndPublishDockerImage: true
     #sonar_endpoint_name: ${{ parameters.sonar_endpoint_name }}
     #sonar_project_key: ${{ parameters.sonar_project_key }}
     #sonar_project_name: ${{ parameters.sonar_project_name }}
