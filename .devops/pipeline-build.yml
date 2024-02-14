@@ -37,7 +37,7 @@ extends:
     dockerFilePath: Dockerfile
     imageTagVariableName: data_api
     helmfileRepoName: helmfileconfig
-    execute_sonar: false
+    execute_sonar: true
     ${{ if eq(variables['Build.Reason'], 'PullRequest') }}:
       updateHelmConfig: false
       buildAndPublishDockerImage: false
