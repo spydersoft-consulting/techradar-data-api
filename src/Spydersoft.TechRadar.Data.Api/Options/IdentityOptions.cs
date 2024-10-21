@@ -8,7 +8,7 @@
         /// <summary>
         /// The section name
         /// </summary>
-        public static string SectionName = "Identity";
+        public const string SectionName = "Identity";
 
         /// <summary>
         /// Gets or sets the authority.
