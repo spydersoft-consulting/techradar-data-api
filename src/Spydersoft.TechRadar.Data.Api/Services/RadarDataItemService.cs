@@ -69,8 +69,8 @@ namespace Spydersoft.TechRadar.Data.Api.Services
                 }
                 foreach (var property in typeof(TRadarDataItem).GetProperties().Where(p => p.CanWrite))
                 {
-                    if (property.Name == nameof(item.Id) 
-                        || property.Name == nameof(RadarItem.DateCreated) 
+                    if (property.Name == nameof(item.Id)
+                        || property.Name == nameof(RadarItem.DateCreated)
                         || property.Name == nameof(RadarItem.MovementDirection))
                     {
                         continue;
@@ -152,11 +152,11 @@ namespace Spydersoft.TechRadar.Data.Api.Services
                     .OrderByDescending(note => note.DateUpdated), parameters.Page, parameters.PageSize);
         }
 
-#endregion
+        #endregion
 
         #region Private Support Functions
 
-        private IQueryable<TRadarDataItem>? GetQueryableForDelete<TRadarDataItem>() where TRadarDataItem: class, IRadarDataItem
+        private IQueryable<TRadarDataItem>? GetQueryableForDelete<TRadarDataItem>() where TRadarDataItem : class, IRadarDataItem
         {
             if (typeof(TRadarDataItem) == typeof(RadarItem))
             {
@@ -213,7 +213,7 @@ namespace Spydersoft.TechRadar.Data.Api.Services
                 _context.RadarArcs.Add(arc);
             }
         }
-        
+
         private void AddNote(int radarItemId, string radarItemNote, string? identityName)
         {
             var note = new RadarItemNote

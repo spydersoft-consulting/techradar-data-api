@@ -17,7 +17,7 @@ namespace Spydersoft.TechRadar.Data.Api.Controllers
         /// Gets the radar data item service.
         /// </summary>
         /// <value>The radar data item service.</value>
-        protected IRadarDataItemService RadarDataItemService { get;  }
+        protected IRadarDataItemService RadarDataItemService { get; }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="DataControllerBase" /> class.

@@ -76,5 +76,5 @@ namespace Spydersoft.TechRadar.Data.Api.Models
 
             return new PagedList<T>(items, count, pageNumber, pageSize);
         }
-	}
+    }
 }

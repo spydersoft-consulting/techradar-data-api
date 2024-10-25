@@ -40,7 +40,7 @@ namespace Spydersoft.TechRadar.Data.Api.Data
         /// Gets or sets the date created.
         /// </summary>
         /// <value>The date created.</value>
-        public DateTime DateCreated { get; set;}
+        public DateTime DateCreated { get; set; }
 
         /// <summary>
         /// Gets or sets the date updated.

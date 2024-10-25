@@ -13,7 +13,8 @@ Log.Logger = new LoggerConfiguration()
     .ReadFrom.Configuration(builder.Configuration)
     .CreateBootstrapLogger();
 
-try {
+try
+{
     Log.Information("TechRadar starting.");
     var config = builder.Configuration;
 

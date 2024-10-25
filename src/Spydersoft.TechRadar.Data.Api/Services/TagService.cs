@@ -52,7 +52,7 @@ namespace Spydersoft.TechRadar.Data.Api.Services
                     });
                 }
             }
-            
+
             return tags.OrderBy(t => t.Name).ToList();
         }
 
