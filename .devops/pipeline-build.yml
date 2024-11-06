@@ -40,7 +40,7 @@ extends:
     dockerFilePath: Dockerfile
     imageTagVariableName: data_api
     helmfileRepoName: helmfileconfig
-    execute_sonar: true
+    executeSonar: true
     #if it's a PR or build from main, don't update helmfile config or build/publish docker image
     ${{ if or(eq(variables['Build.Reason'], 'PullRequest'), eq(variables['Build.SourceBranchName'], 'main')) }}:
       updateHelmConfig: false
@@ -48,10 +48,10 @@ extends:
     ${{ else }}:
       updateHelmConfig: true
       buildAndPublishDockerImage: true
-    sonar_endpoint_name: sonarcloud-spydersoft
-    sonar_project_key: spydersoft-consulting_techradar-data-api
-    sonar_project_name: techradar-data-api
-    execute_tests: true
-    test_projects: '**/*.Tests/*.csproj'
-    use_sonarcloud: true
-    sonar_cloud_organization: spydersoft-consulting
+    sonarEndpointName: sonarcloud-spydersoft
+    sonarProjectKey: spydersoft-consulting_techradar-data-api
+    sonarProjectName: techradar-data-api
+    executeTests: true
+    testProjects: '**/*.Tests/*.csproj'
+    useSonarCloud: true
+    sonarCloudOrganization: spydersoft-consulting
