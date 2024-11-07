@@ -1,43 +1,90 @@
 ﻿using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Diagnostics.HealthChecks;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
-using System.IO;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
+using Microsoft.IdentityModel.Logging;
+using Microsoft.OpenApi.Models;
+using Spydersoft.Core.Hosting;
+using Spydersoft.TechRadar.Data.Api.Configuration;
+using Spydersoft.TechRadar.Data.Api.Data;
+using Spydersoft.TechRadar.Data.Api.Services;
 using System;
-using Microsoft.Extensions.Logging.Configuration;
-using Serilog;
-using Spydersoft.TechRadar.Data.Api;
-using Serilog.Sinks.SystemConsole.Themes;
+using System.IO;
+using System.Reflection;
 
 var builder = WebApplication.CreateBuilder(args);
 
-Log.Logger = new LoggerConfiguration()
-    .ReadFrom.Configuration(builder.Configuration)
-    .CreateBootstrapLogger();
+builder.AddSpydersoftTelemetry(typeof(Program).Assembly);
+builder.AddSpydersoftSerilog();
 
-try
+builder.Services.AddHealthChecks();
+builder.Services.AddControllers();
+
+var authInstalled = builder.AddSpydersoftIdentity();
+
+builder.Services.AddEndpointsApiExplorer();
+
+builder.Services.AddDbContext<TechRadarContext>(
+    options => options.UseSqlServer(builder.Configuration.GetConnectionString("TechRadarDatabase")));
+
+builder.Services.AddScoped<IRadarService, RadarService>();
+builder.Services.AddScoped<IRadarDataItemService, RadarDataItemService>();
+builder.Services.AddScoped<ITagService, TagService>();
+
+builder.Services.AddCors(options =>
 {
-    Log.Information("TechRadar starting.");
-    var config = builder.Configuration;
+    options.AddPolicy("AllowAll",
+        builder => builder.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod());
+});
 
-    builder.Host.UseSerilog((context, services, configuration) =>
+builder.Services.AddSwaggerGen(c =>
+{
+    c.SwaggerDoc("v1", new OpenApiInfo { Title = "Tech Radar API", Version = "v1" });
+
+    var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+    var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+    c.IncludeXmlComments(xmlPath);
+});
+
+var app = builder.Build();
+
+app.InitializeDatabase();
+
+if (app.Environment.IsDevelopment())
+{
+    app.UseCors("AllowAll");
+}
+
+app.UseAuthentication(authInstalled)
+    .UseRouting()
+    .UseHealthChecks("/healthz", new HealthCheckOptions { Predicate = check => check.Tags.Contains("ready") })
+    .UseAuthorization(authInstalled)
+    .UseEndpoints(endpoints => endpoints.MapControllers())
+    .UseDefaultFiles()
+    .UseStaticFiles();
+
+// Enable middleware to serve generated Swagger as a JSON endpoint.
+app.UseSwagger()
+    .UseSwaggerUI(c =>
     {
-        configuration
-        .ReadFrom.Configuration(context.Configuration)
-        .WriteTo.Console(outputTemplate: "[{Timestamp:HH:mm:ss} {Level}] {SourceContext}{NewLine}{Message:lj}{NewLine}{Exception}{NewLine}", theme: AnsiConsoleTheme.Literate);
+        c.SwaggerEndpoint("/swagger/v1/swagger.json", "Tech Radar API");
     });
 
-    var startup = new Startup(builder.Configuration);
-    startup.ConfigureServices(builder.Services);
-    var app = builder.Build();
-    startup.Configure(app, app.Environment);
 
-    app.Run();
-}
-catch (Exception ex)
+
+IdentityModelEventSource.ShowPII = app.Environment.IsDevelopment();
+if (app.Environment.IsDevelopment())
 {
-    Log.Fatal(ex, "Spydersoft.TechRadar.Data.Api failed to start.");
+    app.UseDeveloperExceptionPage();
 }
-finally
+else
 {
-    Log.Information("ASpydersoft.TechRadar.Data.Api shut down complete");
-    Log.CloseAndFlush();
+    app.UseHsts();
 }
+
+
+
+await app.RunAsync();
