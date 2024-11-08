@@ -1,11 +1,9 @@
-﻿using Spydersoft.TechRadar.Data.Api.Data;
+﻿using Microsoft.EntityFrameworkCore;
+using Spydersoft.TechRadar.Data.Api.Data;
 using Spydersoft.TechRadar.Data.Api.Models;
-using Microsoft.EntityFrameworkCore;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
-using Microsoft.AspNetCore.Mvc;
 
 namespace Spydersoft.TechRadar.Data.Api.Services
 {

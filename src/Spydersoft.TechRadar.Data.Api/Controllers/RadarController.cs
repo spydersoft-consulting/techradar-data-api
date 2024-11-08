@@ -1,11 +1,10 @@
-﻿using Spydersoft.TechRadar.Data.Api.Data;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.Collections.Generic;
-using System.Linq;
+using Spydersoft.TechRadar.Data.Api.Data;
 using Spydersoft.TechRadar.Data.Api.Models;
 using Spydersoft.TechRadar.Data.Api.Models.Dto;
 using Spydersoft.TechRadar.Data.Api.Services;
-using Microsoft.AspNetCore.Authorization;
+using System.Collections.Generic;
 
 namespace Spydersoft.TechRadar.Data.Api.Controllers
 {

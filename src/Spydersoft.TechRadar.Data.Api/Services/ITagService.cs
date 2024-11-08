@@ -1,11 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security.Claims;
-using System.Threading.Tasks;
-using Spydersoft.TechRadar.Data.Api.Data;
-using Spydersoft.TechRadar.Data.Api.Models;
+﻿using Spydersoft.TechRadar.Data.Api.Data;
 using Spydersoft.TechRadar.Data.Api.Models.Dto;
+using System.Collections.Generic;
+using System.Security.Claims;
 
 namespace Spydersoft.TechRadar.Data.Api.Services
 {

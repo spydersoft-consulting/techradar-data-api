@@ -1,6 +1,5 @@
-﻿using Spydersoft.TechRadar.Data.Api.Data;
+﻿using Microsoft.AspNetCore.Mvc;
 using Spydersoft.TechRadar.Data.Api.Services;
-using Microsoft.AspNetCore.Mvc;
 using RadarArc = Spydersoft.TechRadar.Data.Api.Data.RadarArc;
 
 namespace Spydersoft.TechRadar.Data.Api.Controllers

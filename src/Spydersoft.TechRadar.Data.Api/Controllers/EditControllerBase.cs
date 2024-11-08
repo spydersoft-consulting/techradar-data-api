@@ -1,7 +1,7 @@
-﻿using Spydersoft.TechRadar.Data.Api.Data;
-using Spydersoft.TechRadar.Data.Api.Services;
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Spydersoft.TechRadar.Data.Api.Data;
+using Spydersoft.TechRadar.Data.Api.Services;
 
 namespace Spydersoft.TechRadar.Data.Api.Controllers
 {

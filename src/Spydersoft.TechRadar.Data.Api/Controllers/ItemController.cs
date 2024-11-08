@@ -1,11 +1,9 @@
-﻿using Spydersoft.TechRadar.Data.Api.Data;
+﻿using Microsoft.AspNetCore.Mvc;
+using Spydersoft.TechRadar.Data.Api.Data;
 using Spydersoft.TechRadar.Data.Api.Models;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using System.Collections.Generic;
-using System.Linq;
 using Spydersoft.TechRadar.Data.Api.Models.Dto;
 using Spydersoft.TechRadar.Data.Api.Services;
+using System.Collections.Generic;
 using RadarItem = Spydersoft.TechRadar.Data.Api.Data.RadarItem;
 
 namespace Spydersoft.TechRadar.Data.Api.Controllers
