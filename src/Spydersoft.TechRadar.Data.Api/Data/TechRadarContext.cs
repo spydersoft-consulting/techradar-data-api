@@ -13,7 +13,11 @@ namespace Spydersoft.TechRadar.Data.Api.Data
     /// Implements the <see cref="Microsoft.EntityFrameworkCore.DbContext" />
     /// </summary>
     /// <seealso cref="Microsoft.EntityFrameworkCore.DbContext" />
-    public class TechRadarContext : DbContext
+    /// <remarks>
+    /// Initializes a new instance of the <see cref="TechRadarContext"/> class.
+    /// </remarks>
+    /// <param name="options">The options for this context.</param>
+    public class TechRadarContext(DbContextOptions options) : DbContext(options)
     {
         /// <summary>
         /// Gets or sets the radar arcs.
@@ -62,15 +66,6 @@ namespace Spydersoft.TechRadar.Data.Api.Data
         /// </summary>
         /// <value>The audits.</value>
         public DbSet<Audit> Audits { get; set; }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="TechRadarContext"/> class.
-        /// </summary>
-        /// <param name="options">The options for this context.</param>
-        public TechRadarContext(DbContextOptions options)
-            : base(options)
-        {
-        }
 
         /// <summary>
         /// Override this method to further configure the model that was discovered by convention from the entity types
@@ -220,22 +215,18 @@ namespace Spydersoft.TechRadar.Data.Api.Data
     /// <summary>
     /// Class AuditEntry.
     /// </summary>
-    public class AuditEntry
+    /// <remarks>
+    /// Initializes a new instance of the <see cref="AuditEntry" /> class.
+    /// </remarks>
+    /// <param name="entry">The entry.</param>
+    public class AuditEntry(EntityEntry entry)
     {
-        /// <summary>
-        /// Initializes a new instance of the <see cref="AuditEntry" /> class.
-        /// </summary>
-        /// <param name="entry">The entry.</param>
-        public AuditEntry(EntityEntry entry)
-        {
-            Entry = entry;
-        }
 
         /// <summary>
         /// Gets the entry.
         /// </summary>
         /// <value>The entry.</value>
-        public EntityEntry Entry { get; }
+        public EntityEntry Entry { get; } = entry;
 
         /// <summary>
         /// Gets or sets the name of the table.

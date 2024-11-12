@@ -11,21 +11,16 @@ namespace Spydersoft.TechRadar.Data.Api.Services
     /// <summary>
     /// Class RadarService.
     /// </summary>
-    public class RadarService : IRadarService
+    /// <remarks>
+    /// Initializes a new instance of the <see cref="RadarService"/> class.
+    /// </remarks>
+    /// <param name="context">The context.</param>
+    public class RadarService(TechRadarContext context) : IRadarService
     {
         /// <summary>
         /// The context
         /// </summary>
-        private readonly TechRadarContext _context;
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="RadarService"/> class.
-        /// </summary>
-        /// <param name="context">The context.</param>
-        public RadarService(TechRadarContext context)
-        {
-            _context = context;
-        }
+        private readonly TechRadarContext _context = context;
 
         /// <summary>
         /// Gets the radar list.

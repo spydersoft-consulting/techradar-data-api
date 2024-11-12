@@ -9,15 +9,12 @@ namespace Spydersoft.TechRadar.Data.Api.Controllers
     /// Implements the <see cref="Spydersoft.TechRadar.Data.Api.Controllers.DataControllerBase" />
     /// </summary>
     /// <seealso cref="Spydersoft.TechRadar.Data.Api.Controllers.DataControllerBase" />
+    /// <remarks>
+    /// Initializes a new instance of the <see cref="TagController" /> class.
+    /// </remarks>
+    /// <param name="radarDataItemService">The radar data item service.</param>
     [Authorize()]
-    public class TagController : EditControllerBase<Tag>
+    public class TagController(IRadarDataItemService radarDataItemService) : EditControllerBase<Tag>(radarDataItemService)
     {
-        /// <summary>
-        /// Initializes a new instance of the <see cref="TagController" /> class.
-        /// </summary>
-        /// <param name="radarDataItemService">The radar data item service.</param>
-        public TagController(IRadarDataItemService radarDataItemService) : base(radarDataItemService)
-        {
-        }
     }
 }

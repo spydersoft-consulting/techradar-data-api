@@ -7,7 +7,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Logging;
 using Microsoft.OpenApi.Models;
-using Spydersoft.Platform.Hosting;
+using Spydersoft.Platform.Hosting.Options;
+using Spydersoft.Platform.Hosting.StartupExtensions;
 using Spydersoft.TechRadar.Data.Api.Configuration;
 using Spydersoft.TechRadar.Data.Api.Data;
 using Spydersoft.TechRadar.Data.Api.Services;
@@ -19,8 +20,8 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.AddSpydersoftTelemetry(typeof(Program).Assembly);
 builder.AddSpydersoftSerilog();
+AppHealthCheckOptions healthCheckOptions = builder.AddSpydersoftHealthChecks();
 
-builder.Services.AddHealthChecks();
 builder.Services.AddControllers();
 
 var authInstalled = builder.AddSpydersoftIdentity();
@@ -58,9 +59,9 @@ if (app.Environment.IsDevelopment())
     app.UseCors("AllowAll");
 }
 
-app.UseAuthentication(authInstalled)
+app.UseSpydersoftHealthChecks(healthCheckOptions)
+    .UseAuthentication(authInstalled)
     .UseRouting()
-    .UseHealthChecks("/healthz", new HealthCheckOptions { Predicate = check => check.Tags.Contains("ready") })
     .UseAuthorization(authInstalled)
     .UseEndpoints(endpoints => endpoints.MapControllers())
     .UseDefaultFiles()

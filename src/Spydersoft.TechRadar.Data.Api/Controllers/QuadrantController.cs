@@ -7,14 +7,11 @@ namespace Spydersoft.TechRadar.Data.Api.Controllers
     /// Class QuadrantController.
     /// Implements the <see cref="Spydersoft.TechRadar.Data.Api.Controllers.DataControllerBase" /></summary>
     /// <seealso cref="Spydersoft.TechRadar.Data.Api.Controllers.DataControllerBase" />
-    public class QuadrantController : EditControllerBase<Quadrant>
+    /// <remarks>
+    /// Initializes a new instance of the <see cref="QuadrantController" /> class.
+    /// </remarks>
+    /// <param name="radarDataItemService">The radar data item service.</param>
+    public class QuadrantController(IRadarDataItemService radarDataItemService) : EditControllerBase<Quadrant>(radarDataItemService)
     {
-        /// <summary>
-        /// Initializes a new instance of the <see cref="QuadrantController" /> class.
-        /// </summary>
-        /// <param name="radarDataItemService">The radar data item service.</param>
-        public QuadrantController(IRadarDataItemService radarDataItemService) : base(radarDataItemService)
-        {
-        }
     }
 }

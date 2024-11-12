@@ -13,22 +13,17 @@ namespace Spydersoft.TechRadar.Data.Api.Controllers
     /// Implements the <see cref="Spydersoft.TechRadar.Data.Api.Controllers.DataControllerBase" />
     /// </summary>
     /// <seealso cref="Spydersoft.TechRadar.Data.Api.Controllers.DataControllerBase" />
-    public class ItemController : EditControllerBase<RadarItem>
+    /// <remarks>
+    /// Initializes a new instance of the <see cref="ItemController" /> class.
+    /// </remarks>
+    /// <param name="radarDataItemService">The radar data item service.</param>
+    /// <param name="tagService">The tag service.</param>
+    public class ItemController(IRadarDataItemService radarDataItemService, ITagService tagService) : EditControllerBase<RadarItem>(radarDataItemService)
     {
         /// <summary>
         /// The tag service
         /// </summary>
-        private readonly ITagService _tagService;
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="ItemController" /> class.
-        /// </summary>
-        /// <param name="radarDataItemService">The radar data item service.</param>
-        /// <param name="tagService">The tag service.</param>
-        public ItemController(IRadarDataItemService radarDataItemService, ITagService tagService) : base(radarDataItemService)
-        {
-            _tagService = tagService;
-        }
+        private readonly ITagService _tagService = tagService;
 
         #region RadarItem Functions
 

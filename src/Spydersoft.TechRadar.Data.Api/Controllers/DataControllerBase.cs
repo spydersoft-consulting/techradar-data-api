@@ -9,7 +9,7 @@ namespace Spydersoft.TechRadar.Data.Api.Controllers
     /// <seealso cref="Spydersoft.TechRadar.Data.Api.Controllers.DataControllerBase" />
     [ApiController]
     [Route("[controller]")]
-    public class DataControllerBase : Controller
+    public class DataControllerBase : ControllerBase
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="DataControllerBase" /> class.
