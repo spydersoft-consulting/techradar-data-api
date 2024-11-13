@@ -19,7 +19,7 @@ using System.Reflection;
 var builder = WebApplication.CreateBuilder(args);
 
 builder.AddSpydersoftTelemetry(typeof(Program).Assembly);
-builder.AddSpydersoftSerilog();
+builder.AddSpydersoftSerilog(true);
 AppHealthCheckOptions healthCheckOptions = builder.AddSpydersoftHealthChecks();
 
 builder.Services.AddControllers();
