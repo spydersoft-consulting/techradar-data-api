@@ -36,11 +36,13 @@ extends:
     netCoreVersion: '8.0.x'
     artifactName: techradarDataApi
     artifactZipName: Spydersoft.TechRadar.Data.Api
-    dockerImageName: spydersoft/techradar/techradar.data.api
+    dockerImageName: spydersoft-consulting/techradar-data-api
     dockerFilePath: Dockerfile
+    containerRegistryName: github-spydersoft-docker
     imageTagVariableName: data_api
     helmfileRepoName: helmfileconfig
     executeSonar: true
+    externalFeedCredentials: SpydersoftGithub
     #if it's a PR or build from main, don't update helmfile config or build/publish docker image
     ${{ if or(eq(variables['Build.Reason'], 'PullRequest'), eq(variables['Build.SourceBranchName'], 'main')) }}:
       updateHelmConfig: false
