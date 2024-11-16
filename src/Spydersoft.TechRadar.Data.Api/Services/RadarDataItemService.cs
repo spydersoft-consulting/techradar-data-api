@@ -1,11 +1,9 @@
-﻿using Spydersoft.TechRadar.Data.Api.Data;
+﻿using Microsoft.EntityFrameworkCore;
+using Spydersoft.TechRadar.Data.Api.Data;
 using Spydersoft.TechRadar.Data.Api.Models;
-using Microsoft.EntityFrameworkCore;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
-using Microsoft.AspNetCore.Mvc;
 
 namespace Spydersoft.TechRadar.Data.Api.Services
 {
@@ -13,27 +11,21 @@ namespace Spydersoft.TechRadar.Data.Api.Services
     /// <summary>
     /// Class RadarDataService.
     /// </summary>
-    public class RadarDataItemService : IRadarDataItemService
+    /// <remarks>
+    /// Initializes a new instance of the <see cref="RadarDataItemService" /> class.
+    /// </remarks>
+    /// <param name="context">The context.</param>
+    public class RadarDataItemService(TechRadarContext context) : IRadarDataItemService
     {
         #region Private Properties
 
         /// <summary>
         /// The context
         /// </summary>
-        private readonly TechRadarContext _context;
+        private readonly TechRadarContext _context = context;
 
         #endregion Private Properties
-
         #region Constructor
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="RadarDataItemService" /> class.
-        /// </summary>
-        /// <param name="context">The context.</param>
-        public RadarDataItemService(TechRadarContext context)
-        {
-            _context = context;
-        }
 
         #endregion Constructor
 
@@ -69,8 +61,8 @@ namespace Spydersoft.TechRadar.Data.Api.Services
                 }
                 foreach (var property in typeof(TRadarDataItem).GetProperties().Where(p => p.CanWrite))
                 {
-                    if (property.Name == nameof(item.Id) 
-                        || property.Name == nameof(RadarItem.DateCreated) 
+                    if (property.Name == nameof(item.Id)
+                        || property.Name == nameof(RadarItem.DateCreated)
                         || property.Name == nameof(RadarItem.MovementDirection))
                     {
                         continue;
@@ -152,11 +144,11 @@ namespace Spydersoft.TechRadar.Data.Api.Services
                     .OrderByDescending(note => note.DateUpdated), parameters.Page, parameters.PageSize);
         }
 
-#endregion
+        #endregion
 
         #region Private Support Functions
 
-        private IQueryable<TRadarDataItem>? GetQueryableForDelete<TRadarDataItem>() where TRadarDataItem: class, IRadarDataItem
+        private IQueryable<TRadarDataItem>? GetQueryableForDelete<TRadarDataItem>() where TRadarDataItem : class, IRadarDataItem
         {
             if (typeof(TRadarDataItem) == typeof(RadarItem))
             {
@@ -213,7 +205,7 @@ namespace Spydersoft.TechRadar.Data.Api.Services
                 _context.RadarArcs.Add(arc);
             }
         }
-        
+
         private void AddNote(int radarItemId, string radarItemNote, string? identityName)
         {
             var note = new RadarItemNote

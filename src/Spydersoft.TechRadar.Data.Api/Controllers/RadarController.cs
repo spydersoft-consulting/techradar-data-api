@@ -1,11 +1,10 @@
-﻿using Spydersoft.TechRadar.Data.Api.Data;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.Collections.Generic;
-using System.Linq;
+using Spydersoft.TechRadar.Data.Api.Data;
 using Spydersoft.TechRadar.Data.Api.Models;
 using Spydersoft.TechRadar.Data.Api.Models.Dto;
 using Spydersoft.TechRadar.Data.Api.Services;
-using Microsoft.AspNetCore.Authorization;
+using System.Collections.Generic;
 
 namespace Spydersoft.TechRadar.Data.Api.Controllers
 {
@@ -13,28 +12,22 @@ namespace Spydersoft.TechRadar.Data.Api.Controllers
     /// Class RadarController.
     /// Implements the <see cref="Spydersoft.TechRadar.Data.Api.Controllers.DataControllerBase" />
     /// </summary>
-    public class RadarController : EditControllerBase<Radar>
+    /// <remarks>
+    /// Initializes a new instance of the <see cref="RadarController" /> class.
+    /// </remarks>
+    /// <param name="radarService">The radar service.</param>
+    /// <param name="tagService">The tag service.</param>
+    /// <param name="radarDataItemService">The radar data item service.</param>
+    public class RadarController(IRadarService radarService, ITagService tagService, IRadarDataItemService radarDataItemService) : EditControllerBase<Radar>(radarDataItemService)
     {
         /// <summary>
         /// The radar service
         /// </summary>
-        private readonly IRadarService _radarService;
+        private readonly IRadarService _radarService = radarService;
         /// <summary>
         /// The tag service
         /// </summary>
-        private readonly ITagService _tagService;
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="RadarController" /> class.
-        /// </summary>
-        /// <param name="radarService">The radar service.</param>
-        /// <param name="tagService">The tag service.</param>
-        /// <param name="radarDataItemService">The radar data item service.</param>
-        public RadarController(IRadarService radarService, ITagService tagService, IRadarDataItemService radarDataItemService) : base(radarDataItemService)
-        {
-            _radarService = radarService;
-            _tagService = tagService;
-        }
+        private readonly ITagService _tagService = tagService;
 
         /// <summary>
         /// Gets this instance.

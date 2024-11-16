@@ -1,5 +1,10 @@
 # build runtime image
 FROM mcr.microsoft.com/dotnet/aspnet:8.0-jammy as runtime
+
+LABEL org.opencontainers.image.source=https://github.com/spydersoft-consulting/techradar-data-api
+LABEL org.opencontainers.image.description="Spydersoft TechRadar Data API"
+LABEL org.opencontainers.image.licenses=MIT
+
 WORKDIR /app
 COPY . /app
 

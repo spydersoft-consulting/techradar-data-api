@@ -1,13 +1,9 @@
-﻿using System;
+﻿using Microsoft.EntityFrameworkCore;
+using Spydersoft.TechRadar.Data.Api.Data;
+using Spydersoft.TechRadar.Data.Api.Models.Dto;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
-using System.Threading.Tasks;
-using Spydersoft.TechRadar.Data.Api.Data;
-using Spydersoft.TechRadar.Data.Api.Models;
-using Spydersoft.TechRadar.Data.Api.Models.Dto;
-using Microsoft.AspNetCore.Http;
-using Microsoft.EntityFrameworkCore;
 
 namespace Spydersoft.TechRadar.Data.Api.Services
 {
@@ -16,18 +12,13 @@ namespace Spydersoft.TechRadar.Data.Api.Services
     /// Implements the <see cref="Spydersoft.TechRadar.Data.Api.Services.ITagService" />
     /// </summary>
     /// <seealso cref="Spydersoft.TechRadar.Data.Api.Services.ITagService" />
-    public class TagService : ITagService
+    /// <remarks>
+    /// Initializes a new instance of the <see cref="TagService"/> class.
+    /// </remarks>
+    /// <param name="context">The context.</param>
+    public class TagService(TechRadarContext context) : ITagService
     {
-        private readonly TechRadarContext _context;
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="TagService"/> class.
-        /// </summary>
-        /// <param name="context">The context.</param>
-        public TagService(TechRadarContext context)
-        {
-            _context = context;
-        }
+        private readonly TechRadarContext _context = context;
 
         #region ITagService Functions
 
@@ -52,7 +43,7 @@ namespace Spydersoft.TechRadar.Data.Api.Services
                     });
                 }
             }
-            
+
             return tags.OrderBy(t => t.Name).ToList();
         }
 

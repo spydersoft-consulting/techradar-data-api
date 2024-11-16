@@ -1,7 +1,7 @@
-﻿using Spydersoft.TechRadar.Data.Api.Data;
-using Spydersoft.TechRadar.Data.Api.Services;
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Spydersoft.TechRadar.Data.Api.Data;
+using Spydersoft.TechRadar.Data.Api.Services;
 
 namespace Spydersoft.TechRadar.Data.Api.Controllers
 {
@@ -10,24 +10,19 @@ namespace Spydersoft.TechRadar.Data.Api.Controllers
     /// Implements the <see cref="Microsoft.AspNetCore.Mvc.ControllerBase" />
     /// </summary>
     /// <seealso cref="Microsoft.AspNetCore.Mvc.ControllerBase" />
+    /// <remarks>
+    /// Initializes a new instance of the <see cref="DataControllerBase" /> class.
+    /// </remarks>
+    /// <param name="service">The service.</param>
+    /// <remarks>This class provides easy access to data and services for the TechRadar.</remarks>
     [Authorize()]
-    public class EditControllerBase<TRadarDataItem> : DataControllerBase where TRadarDataItem : class, IRadarDataItem
+    public class EditControllerBase<TRadarDataItem>(IRadarDataItemService service) : DataControllerBase() where TRadarDataItem : class, IRadarDataItem
     {
         /// <summary>
         /// Gets the radar data item service.
         /// </summary>
         /// <value>The radar data item service.</value>
-        protected IRadarDataItemService RadarDataItemService { get;  }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="DataControllerBase" /> class.
-        /// </summary>
-        /// <param name="service">The service.</param>
-        /// <remarks>This class provides easy access to data and services for the TechRadar.</remarks>
-        public EditControllerBase(IRadarDataItemService service) : base()
-        {
-            RadarDataItemService = service;
-        }
+        protected IRadarDataItemService RadarDataItemService { get; } = service;
 
         /// <summary>
         /// Gets the item for the given <paramref name="id"/>

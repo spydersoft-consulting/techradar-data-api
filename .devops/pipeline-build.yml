@@ -11,6 +11,9 @@ resources:
       name: spydersoft-consulting/techradar-helm-config
 
 trigger:
+  tags:
+    include:
+    - "*"
   branches:
     include:
       - main
@@ -27,26 +30,30 @@ pr:
 extends:
   template: pipelines/build-api/v1.yml@templates
   parameters:
+    gitVersionSpec: '6.x'
     buildProject: src/**/*.csproj
     publishProject: src/Spydersoft.TechRadar.Data.Api.csproj
     netCoreVersion: '8.0.x'
     artifactName: techradarDataApi
     artifactZipName: Spydersoft.TechRadar.Data.Api
-    dockerImageName: spydersoft/techradar/techradar.data.api
+    dockerImageName: spydersoft-consulting/techradar-data-api
     dockerFilePath: Dockerfile
+    containerRegistryName: github-spydersoft-docker
     imageTagVariableName: data_api
     helmfileRepoName: helmfileconfig
-    execute_sonar: true
-    ${{ if eq(variables['Build.Reason'], 'PullRequest') }}:
+    executeSonar: true
+    externalFeedCredentials: SpydersoftGithub
+    #if it's a PR or build from main, don't update helmfile config or build/publish docker image
+    ${{ if or(eq(variables['Build.Reason'], 'PullRequest'), eq(variables['Build.SourceBranchName'], 'main')) }}:
       updateHelmConfig: false
       buildAndPublishDockerImage: false
     ${{ else }}:
       updateHelmConfig: true
       buildAndPublishDockerImage: true
-    sonar_endpoint_name: sonarcloud-spydersoft
-    sonar_project_key: spydersoft-consulting_techradar-data-api
-    sonar_project_name: techradar-data-api
-    execute_tests: true
-    test_projects: '**/*.Tests/*.csproj'
-    use_sonarcloud: true
-    sonar_cloud_organization: spydersoft-consulting
+    sonarEndpointName: sonarcloud-spydersoft
+    sonarProjectKey: spydersoft-consulting_techradar-data-api
+    sonarProjectName: techradar-data-api
+    executeTests: true
+    testProjects: '**/*.Tests/*.csproj'
+    useSonarCloud: true
+    sonarCloudOrganization: spydersoft-consulting

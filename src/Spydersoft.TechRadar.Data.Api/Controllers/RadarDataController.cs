@@ -1,10 +1,10 @@
-﻿using Spydersoft.TechRadar.Data.Api.Data;
+﻿using Microsoft.AspNetCore.Mvc;
+using Spydersoft.TechRadar.Data.Api.Data;
 using Spydersoft.TechRadar.Data.Api.Models;
-using Microsoft.AspNetCore.Mvc;
-using System.Collections.Generic;
 using Spydersoft.TechRadar.Data.Api.Models.Dto;
 using Spydersoft.TechRadar.Data.Api.Models.RadarViewObjects;
 using Spydersoft.TechRadar.Data.Api.Services;
+using System.Collections.Generic;
 
 namespace Spydersoft.TechRadar.Data.Api.Controllers
 {
@@ -13,28 +13,22 @@ namespace Spydersoft.TechRadar.Data.Api.Controllers
     /// Implements the <see cref="Spydersoft.TechRadar.Data.Api.Controllers.DataControllerBase" />
     /// </summary>
     /// <seealso cref="Spydersoft.TechRadar.Data.Api.Controllers.DataControllerBase" />
-    public class RadarDataController : DataControllerBase
+    /// <remarks>
+    /// Initializes a new instance of the <see cref="RadarDataController" /> class.
+    /// </remarks>
+    /// <param name="radarService">The radar service.</param>
+    /// <param name="tagService">The tag service.</param>
+    public class RadarDataController(IRadarService radarService, ITagService tagService) : DataControllerBase()
     {
         /// <summary>
         /// The radar service
         /// </summary>
-        private readonly IRadarService _radarService;
+        private readonly IRadarService _radarService = radarService;
 
         /// <summary>
         /// The tag service
         /// </summary>
-        private readonly ITagService _tagService;
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="RadarDataController" /> class.
-        /// </summary>
-        /// <param name="radarService">The radar service.</param>
-        /// <param name="tagService">The tag service.</param>
-        public RadarDataController(IRadarService radarService, ITagService tagService) : base()
-        {
-            _radarService = radarService;
-            _tagService = tagService;
-        }
+        private readonly ITagService _tagService = tagService;
 
         /// <summary>
         /// Gets this instance.

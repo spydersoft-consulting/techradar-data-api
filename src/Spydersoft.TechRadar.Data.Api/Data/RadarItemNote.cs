@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace Spydersoft.TechRadar.Data.Api.Data
 {
@@ -40,7 +37,7 @@ namespace Spydersoft.TechRadar.Data.Api.Data
         /// Gets or sets the date created.
         /// </summary>
         /// <value>The date created.</value>
-        public DateTime DateCreated { get; set;}
+        public DateTime DateCreated { get; set; }
 
         /// <summary>
         /// Gets or sets the date updated.
