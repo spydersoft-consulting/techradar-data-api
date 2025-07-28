@@ -80,6 +80,10 @@ namespace Spydersoft.TechRadar.Data.Api.Data
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
+            
+            // Configure PostgreSQL to use snake_case naming convention
+            modelBuilder.HasPostgresExtension("uuid-ossp");
+            
             modelBuilder.Entity<Radar>(entity =>
             {
                 entity.Property(e => e.Title).IsRequired();
@@ -88,8 +92,10 @@ namespace Spydersoft.TechRadar.Data.Api.Data
             modelBuilder.Entity<RadarItem>(entity => { entity.Ignore(e => e.Note); });
 
             modelBuilder.Entity<Tag>().HasKey(t => t.Id);
-            modelBuilder.Entity<RadarItemTag>().HasKey(rit => rit.Id);
-            modelBuilder.Entity<RadarItemTag>().HasKey(rit => new { rit.RadarItemId, rit.TagId });
+            
+            // Configure RadarItemTag with composite key
+            modelBuilder.Entity<RadarItemTag>()
+                .HasKey(rit => new { rit.RadarItemId, rit.TagId });
 
             modelBuilder.Entity<RadarItemTag>()
                 .HasOne(rit => rit.RadarItem)
@@ -100,7 +106,6 @@ namespace Spydersoft.TechRadar.Data.Api.Data
                 .HasOne(rit => rit.Tag)
                 .WithMany(t => t.Tags)
                 .HasForeignKey(rit => rit.TagId);
-
         }
 
         /// <summary>

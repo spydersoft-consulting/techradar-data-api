@@ -29,7 +29,7 @@ var authInstalled = builder.AddSpydersoftIdentity();
 builder.Services.AddEndpointsApiExplorer();
 
 builder.Services.AddDbContext<TechRadarContext>(
-    options => options.UseSqlServer(builder.Configuration.GetConnectionString("TechRadarDatabase")));
+    options => options.UseNpgsql(builder.Configuration.GetConnectionString("TechRadarDatabase")));
 
 builder.Services.AddScoped<IRadarService, RadarService>();
 builder.Services.AddScoped<IRadarDataItemService, RadarDataItemService>();
@@ -75,7 +75,6 @@ app.UseSwagger()
     });
 
 
-
 IdentityModelEventSource.ShowPII = app.Environment.IsDevelopment();
 if (app.Environment.IsDevelopment())
 {
@@ -85,7 +84,5 @@ else
 {
     app.UseHsts();
 }
-
-
 
 await app.RunAsync();
