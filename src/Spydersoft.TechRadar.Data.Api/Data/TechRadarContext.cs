@@ -67,6 +67,12 @@ namespace Spydersoft.TechRadar.Data.Api.Data
         /// <value>The audits.</value>
         public DbSet<Audit> Audits { get; set; }
 
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        {
+            base.OnConfiguring(optionsBuilder);
+            optionsBuilder.UseSnakeCaseNamingConvention();
+        }
+
         /// <summary>
         /// Override this method to further configure the model that was discovered by convention from the entity types
         /// exposed in <see cref="T:Microsoft.EntityFrameworkCore.DbSet`1" /> properties on your derived context. The resulting model may be cached

@@ -29,7 +29,9 @@ var authInstalled = builder.AddSpydersoftIdentity();
 builder.Services.AddEndpointsApiExplorer();
 
 builder.Services.AddDbContext<TechRadarContext>(
-    options => options.UseNpgsql(builder.Configuration.GetConnectionString("TechRadarDatabase")));
+    options => options.UseNpgsql(builder.Configuration.GetConnectionString("TechRadarDatabase"),
+                                 x => x.MigrationsHistoryTable("ef_migrations_history"))
+);
 
 builder.Services.AddScoped<IRadarService, RadarService>();
 builder.Services.AddScoped<IRadarDataItemService, RadarDataItemService>();
