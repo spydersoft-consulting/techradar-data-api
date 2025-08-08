@@ -1,5 +1,4 @@
 using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -11,9 +10,6 @@ using Spydersoft.Platform.Hosting.StartupExtensions;
 using Spydersoft.TechRadar.Data.Api.Configuration;
 using Spydersoft.TechRadar.Data.Api.Data;
 using Spydersoft.TechRadar.Data.Api.Services;
-using System;
-using System.IO;
-using System.Reflection;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -48,13 +44,13 @@ builder.Services.AddOpenApiDocument(configure =>
     configure.Title = "Tech Radar API";
     configure.Version = "v1";
     configure.Description = "API for managing technology radar data";
-    
+
     // Configure post-processing for additional metadata
     configure.PostProcess = document =>
     {
         document.Info.Title = "Tech Radar API";
         document.Info.Description = "A comprehensive API for managing technology radar data including radars, items, tags, and notes.";
-        
+
         // Set contact information
         document.Info.Contact = new NSwag.OpenApiContact
         {
@@ -62,7 +58,7 @@ builder.Services.AddOpenApiDocument(configure =>
             Email = "support@techradar.com"
         };
     };
-    
+
     // Configure authentication if enabled
     if (authInstalled)
     {
@@ -73,7 +69,7 @@ builder.Services.AddOpenApiDocument(configure =>
             BearerFormat = "JWT",
             Description = "Input a valid JWT token to access this API"
         });
-        
+
         configure.OperationProcessors.Add(new NSwag.Generation.Processors.Security.AspNetCoreOperationSecurityScopeProcessor("Bearer"));
     }
 });
