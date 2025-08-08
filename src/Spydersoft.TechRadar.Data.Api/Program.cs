@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
@@ -6,7 +6,6 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Logging;
-using Microsoft.OpenApi.Models;
 using Spydersoft.Platform.Hosting.Options;
 using Spydersoft.Platform.Hosting.StartupExtensions;
 using Spydersoft.TechRadar.Data.Api.Configuration;
@@ -43,13 +42,40 @@ builder.Services.AddCors(options =>
         builder => builder.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod());
 });
 
-builder.Services.AddSwaggerGen(c =>
+// Configure NSwag
+builder.Services.AddOpenApiDocument(configure =>
 {
-    c.SwaggerDoc("v1", new OpenApiInfo { Title = "Tech Radar API", Version = "v1" });
-
-    var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
-    var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
-    c.IncludeXmlComments(xmlPath);
+    configure.Title = "Tech Radar API";
+    configure.Version = "v1";
+    configure.Description = "API for managing technology radar data";
+    
+    // Configure post-processing for additional metadata
+    configure.PostProcess = document =>
+    {
+        document.Info.Title = "Tech Radar API";
+        document.Info.Description = "A comprehensive API for managing technology radar data including radars, items, tags, and notes.";
+        
+        // Set contact information
+        document.Info.Contact = new NSwag.OpenApiContact
+        {
+            Name = "Tech Radar API",
+            Email = "support@techradar.com"
+        };
+    };
+    
+    // Configure authentication if enabled
+    if (authInstalled)
+    {
+        configure.AddSecurity("Bearer", new NSwag.OpenApiSecurityScheme
+        {
+            Type = NSwag.OpenApiSecuritySchemeType.Http,
+            Scheme = "bearer",
+            BearerFormat = "JWT",
+            Description = "Input a valid JWT token to access this API"
+        });
+        
+        configure.OperationProcessors.Add(new NSwag.Generation.Processors.Security.AspNetCoreOperationSecurityScopeProcessor("Bearer"));
+    }
 });
 
 var app = builder.Build();
@@ -69,13 +95,9 @@ app.UseSpydersoftHealthChecks(healthCheckOptions)
     .UseDefaultFiles()
     .UseStaticFiles();
 
-// Enable middleware to serve generated Swagger as a JSON endpoint.
-app.UseSwagger()
-    .UseSwaggerUI(c =>
-    {
-        c.SwaggerEndpoint("/swagger/v1/swagger.json", "Tech Radar API");
-    });
-
+// Enable NSwag middleware
+app.UseOpenApi(); // Serves the OpenAPI specification at /swagger/v1/swagger.json
+app.UseSwaggerUi(); // Serves the Swagger UI at /swagger
 
 IdentityModelEventSource.ShowPII = app.Environment.IsDevelopment();
 if (app.Environment.IsDevelopment())
