@@ -1,20 +1,19 @@
-﻿namespace Spydersoft.TechRadar.Data.Api.Models.RadarViewObjects
+﻿namespace Spydersoft.TechRadar.Data.Api.Models.RadarViewObjects;
+
+/// <summary>
+/// Class RadarQuadrant.
+/// </summary>
+public class RadarQuadrant
 {
     /// <summary>
-    /// Class RadarQuadrant.
+    /// Gets or sets the name.
     /// </summary>
-    public class RadarQuadrant
-    {
-        /// <summary>
-        /// Gets or sets the name.
-        /// </summary>
-        /// <value>The name.</value>
-        public string? Name { get; set; }
+    /// <value>The name.</value>
+    public string? Name { get; set; }
 
-        /// <summary>
-        /// Gets or sets the color.
-        /// </summary>
-        /// <value>The color.</value>
-        public string? Color { get; set; }
-    }
+    /// <summary>
+    /// Gets or sets the color.
+    /// </summary>
+    /// <value>The color.</value>
+    public string? Color { get; set; }
 }

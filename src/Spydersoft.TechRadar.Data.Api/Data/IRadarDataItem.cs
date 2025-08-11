@@ -1,14 +1,13 @@
-﻿namespace Spydersoft.TechRadar.Data.Api.Data
+﻿namespace Spydersoft.TechRadar.Data.Api.Data;
+
+/// <summary>
+/// Interface IRadarDataItem
+/// </summary>
+public interface IRadarDataItem
 {
     /// <summary>
-    /// Interface IRadarDataItem
+    /// Gets or sets the identifier.
     /// </summary>
-    public interface IRadarDataItem
-    {
-        /// <summary>
-        /// Gets or sets the identifier.
-        /// </summary>
-        /// <value>The identifier.</value>
-        int Id { get; set; }
-    }
+    /// <value>The identifier.</value>
+    int Id { get; set; }
 }
