@@ -46,15 +46,15 @@ public class RadarDataItemServiceTests
 
         var claims = new List<Claim>()
         {
-            new Claim(ClaimTypes.Name, "username"),
-            new Claim(ClaimTypes.NameIdentifier, "userId"),
-            new Claim("name", "John Doe"),
+            new(ClaimTypes.Name, "username"),
+            new(ClaimTypes.NameIdentifier, "userId"),
+            new("name", "John Doe"),
         };
         var identity = new ClaimsIdentity(claims, "TestAuthType");
         _claimsPrincipal = new ClaimsPrincipal(identity);
     }
 
-    TechRadarContext CreateContext() => new TechRadarContext(_contextOptions);
+    private TechRadarContext CreateContext() => new(_contextOptions);
 
     [OneTimeTearDown]
     public void OneTimeTearDown()
@@ -67,7 +67,7 @@ public class RadarDataItemServiceTests
     [Test]
     public async Task NewRadarItem_GetsQuadrantsAndArcs()
     {
-        var newTitle = "Quadrant Create Test";
+        string newTitle = "Quadrant Create Test";
         using var context = CreateContext();
         var radarService = new RadarDataItemService(context);
 
@@ -84,16 +84,16 @@ public class RadarDataItemServiceTests
         var quadrants = await context.Quadrants
             .Where(q => q.RadarId == radar.Id)
             .ToListAsync();
-        
+
         Assert.That(quadrants, Is.Not.Null);
-        Assert.That(quadrants.Count, Is.EqualTo(4), "Expected 4 quadrants to be created for a new radar item.");
+        Assert.That(quadrants, Has.Count.EqualTo(4), "Expected 4 quadrants to be created for a new radar item.");
 
         var arcs = await context.RadarArcs
             .Where(ra => ra.RadarId == radar.Id)
             .ToListAsync();
 
         Assert.That(arcs, Is.Not.Null);
-        Assert.That(arcs.Count, Is.EqualTo(4), "Expected 4 arcs to be created for a new radar item.");
+        Assert.That(arcs, Has.Count.EqualTo(4), "Expected 4 arcs to be created for a new radar item.");
     }
 
     [Test]
@@ -113,14 +113,14 @@ public class RadarDataItemServiceTests
             .ToListAsync();
 
         Assert.That(quadrants, Is.Not.Null);
-        Assert.That(quadrants.Count, Is.EqualTo(0), "Expected 0 quadrants to be created for an existing radar item in the DB.");
+        Assert.That(quadrants, Has.Count.EqualTo(0), "Expected 0 quadrants to be created for an existing radar item in the DB.");
 
         var arcs = await context.RadarArcs
             .Where(ra => ra.RadarId == radar.Id)
             .ToListAsync();
 
         Assert.That(arcs, Is.Not.Null);
-        Assert.That(arcs.Count, Is.EqualTo(0), "Expected 0 arcs to be created for an existing radar item in the DB.");
+        Assert.That(arcs, Has.Count.EqualTo(0), "Expected 0 arcs to be created for an existing radar item in the DB.");
     }
 
     [Test]
@@ -136,9 +136,12 @@ public class RadarDataItemServiceTests
         var result = service.GetRadarDataItem<Radar>(radar.Id);
 
         // Assert
-        Assert.That(result, Is.Not.Null);
-        Assert.That(result.Title, Is.EqualTo(ExistingRadarName));
-        Assert.That(result.Id, Is.EqualTo(radar.Id));
+        using (Assert.EnterMultipleScope())
+        {
+            Assert.That(result, Is.Not.Null);
+            Assert.That(result?.Title, Is.EqualTo(ExistingRadarName));
+            Assert.That(result?.Id, Is.EqualTo(radar.Id));
+        }
     }
 
     [Test]
@@ -176,9 +179,12 @@ public class RadarDataItemServiceTests
         // Assert
         var savedQuadrant = context.Quadrants.FirstOrDefault(q => q.Name == "Test Quadrant");
         Assert.That(savedQuadrant, Is.Not.Null);
-        Assert.That(savedQuadrant.Color, Is.EqualTo("#FF0000"));
-        Assert.That(savedQuadrant.Position, Is.EqualTo(1));
-        Assert.That(savedQuadrant.RadarId, Is.EqualTo(radar.Id));
+        using (Assert.EnterMultipleScope())
+        {
+            Assert.That(savedQuadrant.Color, Is.EqualTo("#FF0000"));
+            Assert.That(savedQuadrant.Position, Is.EqualTo(1));
+            Assert.That(savedQuadrant.RadarId, Is.EqualTo(radar.Id));
+        }
     }
 
     [Test]
@@ -211,9 +217,13 @@ public class RadarDataItemServiceTests
 
         // Assert
         var savedQuadrant = context.Quadrants.First(q => q.Id == quadrant.Id);
-        Assert.That(savedQuadrant.Name, Is.EqualTo("Updated Quadrant"));
-        Assert.That(savedQuadrant.Color, Is.EqualTo("#00FF00"));
-        Assert.That(savedQuadrant.Position, Is.EqualTo(2));
+        using (Assert.EnterMultipleScope())
+        {
+            Assert.That(savedQuadrant, Is.Not.Null);
+            Assert.That(savedQuadrant.Name, Is.EqualTo("Updated Quadrant"));
+            Assert.That(savedQuadrant.Color, Is.EqualTo("#00FF00"));
+            Assert.That(savedQuadrant.Position, Is.EqualTo(2));
+        }
     }
 
     [Test]
@@ -241,10 +251,13 @@ public class RadarDataItemServiceTests
         // Assert
         var savedItem = context.RadarItems.FirstOrDefault(ri => ri.Name == "Test Item");
         Assert.That(savedItem, Is.Not.Null);
-        Assert.That(savedItem.LegendKey, Is.EqualTo("TI"));
-        Assert.That(savedItem.Rank, Is.EqualTo(1));
-        Assert.That(savedItem.DateCreated, Is.GreaterThan(DateTime.MinValue));
-        Assert.That(savedItem.DateUpdated, Is.GreaterThan(DateTime.MinValue));
+        using (Assert.EnterMultipleScope())
+        {
+            Assert.That(savedItem.LegendKey, Is.EqualTo("TI"));
+            Assert.That(savedItem.Rank, Is.EqualTo(1));
+            Assert.That(savedItem.DateCreated, Is.GreaterThan(DateTime.MinValue));
+            Assert.That(savedItem.DateUpdated, Is.GreaterThan(DateTime.MinValue));
+        }
     }
 
     [Test]
@@ -274,9 +287,12 @@ public class RadarDataItemServiceTests
         Assert.That(savedItem, Is.Not.Null);
 
         var notes = context.RadarItemNotes.Where(n => n.RadarItemId == savedItem.Id).ToList();
-        Assert.That(notes.Count, Is.EqualTo(1));
-        Assert.That(notes.First().Notes, Is.EqualTo("This is a test note"));
-        Assert.That(notes.First().UserId, Is.EqualTo("username"));
+        Assert.That(notes, Has.Count.EqualTo(1));
+        using (Assert.EnterMultipleScope())
+        {
+            Assert.That(notes.First().Notes, Is.EqualTo("This is a test note"));
+            Assert.That(notes.First().UserId, Is.EqualTo("username"));
+        }   
     }
 
     [Test]
@@ -289,7 +305,7 @@ public class RadarDataItemServiceTests
         // Arrange - Create radar with arcs first
         service.SaveRadarDataItem(new Radar { Title = "Test Radar for Movement", Description = "Test" }, _claimsPrincipal);
         var testRadar = context.Radars.First(r => r.Title == "Test Radar for Movement");
-        
+
         var arc1 = context.RadarArcs.First(a => a.RadarId == testRadar.Id && a.Position == 1);
         var arc2 = context.RadarArcs.First(a => a.RadarId == testRadar.Id && a.Position == 2);
 
@@ -339,7 +355,7 @@ public class RadarDataItemServiceTests
             RadarId = radar.Id
         };
         service.SaveRadarDataItem(quadrant, _claimsPrincipal);
-        var quadrantId = quadrant.Id;
+        int quadrantId = quadrant.Id;
 
         // Act
         service.DeleteRadarDataItem<Quadrant>(quadrantId, _claimsPrincipal);
@@ -367,17 +383,17 @@ public class RadarDataItemServiceTests
             ArcId = 1
         };
         service.SaveRadarDataItem(radarItem, _claimsPrincipal);
-        
+
         // Add a tag
         var tag = new Tag { Name = "Test Tag", RadarId = radar.Id };
         context.Tags.Add(tag);
         context.SaveChanges();
-        
+
         var radarItemTag = new RadarItemTag { Id = 1000, RadarItemId = radarItem.Id, TagId = tag.Id };
         context.RadarItemTags.Add(radarItemTag);
         context.SaveChanges();
 
-        var itemId = radarItem.Id;
+        int itemId = radarItem.Id;
 
         // Act
         service.DeleteRadarDataItem<RadarItem>(itemId, _claimsPrincipal);
@@ -385,9 +401,9 @@ public class RadarDataItemServiceTests
         // Assert
         var deletedItem = context.RadarItems.FirstOrDefault(ri => ri.Id == itemId);
         Assert.That(deletedItem, Is.Null);
-        
+
         var deletedTags = context.RadarItemTags.Where(rt => rt.RadarItemId == itemId).ToList();
-        Assert.That(deletedTags.Count, Is.EqualTo(0));
+        Assert.That(deletedTags, Has.Count.EqualTo(0));
     }
 
     [Test]
@@ -440,16 +456,19 @@ public class RadarDataItemServiceTests
 
         // Assert
         Assert.That(result, Is.Not.Null);
-        Assert.That(result.Count, Is.EqualTo(3));
-        Assert.That(result.TotalCount, Is.EqualTo(5));
-        Assert.That(result.CurrentPage, Is.EqualTo(1));
-        Assert.That(result.TotalPages, Is.EqualTo(2));
-        Assert.That(result.HasNext, Is.True);
-        Assert.That(result.HasPrevious, Is.False);
-        
-        // Verify ordering (most recent first)
-        Assert.That(result.First().Notes, Is.EqualTo("Test Note 1"));
-        Assert.That(result.Last().Notes, Is.EqualTo("Test Note 3"));
+        using (Assert.EnterMultipleScope())
+        {
+            Assert.That(result, Has.Count.EqualTo(3));
+            Assert.That(result.TotalCount, Is.EqualTo(5));
+            Assert.That(result.CurrentPage, Is.EqualTo(1));
+            Assert.That(result.TotalPages, Is.EqualTo(2));
+            Assert.That(result.HasNext, Is.True);
+            Assert.That(result.HasPrevious, Is.False);
+
+            // Verify ordering (most recent first)
+            Assert.That(result.First().Notes, Is.EqualTo("Test Note 1"));
+            Assert.That(result.Last().Notes, Is.EqualTo("Test Note 3"));
+        }
     }
 
     [Test]
@@ -476,11 +495,14 @@ public class RadarDataItemServiceTests
         var result = service.GetNotes(radarItem.Id, parameters);
 
         // Assert
-        Assert.That(result, Is.Not.Null);
-        Assert.That(result.Count, Is.EqualTo(0));
-        Assert.That(result.TotalCount, Is.EqualTo(0));
-        Assert.That(result.HasNext, Is.False);
-        Assert.That(result.HasPrevious, Is.False);
+        using (Assert.EnterMultipleScope())
+        {
+            Assert.That(result, Is.Not.Null);
+            Assert.That(result, Has.Count.Zero);
+            Assert.That(result.TotalCount, Is.Zero);
+            Assert.That(result.HasNext, Is.False);
+            Assert.That(result.HasPrevious, Is.False);
+        }
     }
 
     [Test]
@@ -523,12 +545,15 @@ public class RadarDataItemServiceTests
 
         // Assert
         Assert.That(result, Is.Not.Null);
-        Assert.That(result.Count, Is.EqualTo(3));
-        Assert.That(result.CurrentPage, Is.EqualTo(2));
-        Assert.That(result.HasNext, Is.True);
-        Assert.That(result.HasPrevious, Is.True);
-        
-        // Verify we get the second page items
-        Assert.That(result.First().Notes, Is.EqualTo("Paging Note 4"));
+        using (Assert.EnterMultipleScope())
+        {
+            Assert.That(result, Has.Count.EqualTo(3));
+            Assert.That(result.CurrentPage, Is.EqualTo(2));
+            Assert.That(result.HasNext, Is.True);
+            Assert.That(result.HasPrevious, Is.True);
+
+            // Verify we get the second page items
+            Assert.That(result.First().Notes, Is.EqualTo("Paging Note 4"));
+        }
     }
 }
