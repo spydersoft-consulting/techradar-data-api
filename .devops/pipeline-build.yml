@@ -51,6 +51,10 @@ extends:
       updateHelmConfig: true
       buildAndPublishDockerImage: true
       executeSonar: false
+    sonarExtraProperties: |
+         sonar.exclusions=**/Migrations/**/*
+         sonar.scanner.scanAll=false
+         sonar.coverage.exclusions=**/*Program.cs,**/*Controller.cs
     sonarEndpointName: sonarcloud-spydersoft
     sonarProjectKey: spydersoft-consulting_techradar-data-api
     sonarProjectName: techradar-data-api
