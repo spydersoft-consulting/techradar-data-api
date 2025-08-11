@@ -37,7 +37,7 @@ public class RadarServiceTests
         context.SaveChanges();
     }
 
-    TechRadarContext CreateContext() => new TechRadarContext(_contextOptions);
+    private TechRadarContext CreateContext() => new(_contextOptions);
 
     [OneTimeTearDown]
     public void OneTimeTearDown()
@@ -55,7 +55,7 @@ public class RadarServiceTests
 
         var radars = await radarService.GetRadarList();
         Assert.That(radars, Is.Not.Null);
-        Assert.That(radars.Count, Is.EqualTo(2));
+        Assert.That(radars, Has.Count.EqualTo(2));
     }
 
 
