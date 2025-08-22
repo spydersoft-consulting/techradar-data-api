@@ -5,6 +5,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Logging;
+using Npgsql;
 using Spydersoft.Platform.Hosting.Options;
 using Spydersoft.Platform.Hosting.StartupExtensions;
 using Spydersoft.TechRadar.Data.Api.Configuration;
@@ -13,7 +14,13 @@ using Spydersoft.TechRadar.Data.Api.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.AddSpydersoftTelemetry(typeof(Program).Assembly);
+builder.AddSpydersoftTelemetry(typeof(Program).Assembly, additionalTraceConfiguration =>
+{
+    additionalTraceConfiguration.AddNpgsql();
+}, additionalMetricsConfiguration =>
+{
+    additionalMetricsConfiguration.AddNpgsqlInstrumentation();
+}, null);
 builder.AddSpydersoftSerilog(true);
 AppHealthCheckOptions healthCheckOptions = builder.AddSpydersoftHealthChecks();
 

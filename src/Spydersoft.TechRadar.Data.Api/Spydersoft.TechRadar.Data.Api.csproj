@@ -35,6 +35,7 @@
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 		</PackageReference>
 		<PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="9.0.4" />
+		<PackageReference Include="Npgsql.OpenTelemetry" Version="9.0.3" />
 		<PackageReference Include="NSwag.AspNetCore" Version="14.5.0" />
 		<PackageReference Include="Spydersoft.Platform.Hosting" Version="2.1.0" />
 	</ItemGroup>
