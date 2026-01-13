@@ -14,13 +14,16 @@ using Spydersoft.TechRadar.Data.Api.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.AddSpydersoftTelemetry(typeof(Program).Assembly, additionalTraceConfiguration =>
-{
-    additionalTraceConfiguration.AddNpgsql();
-}, additionalMetricsConfiguration =>
-{
-    additionalMetricsConfiguration.AddNpgsqlInstrumentation();
-}, null);
+builder.AddSpydersoftTelemetry(typeof(Program).Assembly, new Spydersoft.Platform.Hosting.Telemetry.ConfigurationFunctions() {
+    TraceConfiguration = (builder) =>
+        {
+            builder.AddNpgsql();
+        },
+    MetricsConfiguration = (builder) =>
+        {
+            builder.AddNpgsqlInstrumentation();
+        }
+});
 builder.AddSpydersoftSerilog(true);
 AppHealthCheckOptions healthCheckOptions = builder.AddSpydersoftHealthChecks();
 
