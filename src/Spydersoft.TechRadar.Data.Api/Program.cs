@@ -38,6 +38,7 @@ builder.Services.AddDbContext<TechRadarContext>(
                                  x => x.MigrationsHistoryTable("ef_migrations_history"))
 );
 
+builder.Services.AddScoped<Spydersoft.TechRadar.Data.Api.Telemetry.TechRadarTelemetryMetrics>();
 builder.Services.AddScoped<IRadarService, RadarService>();
 builder.Services.AddScoped<IRadarDataItemService, RadarDataItemService>();
 builder.Services.AddScoped<ITagService, TagService>();

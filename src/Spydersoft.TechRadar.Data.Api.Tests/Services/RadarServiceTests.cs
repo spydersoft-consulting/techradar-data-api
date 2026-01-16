@@ -1,7 +1,12 @@
 using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
+using Moq;
+using Spydersoft.Platform.Telemetry;
 using Spydersoft.TechRadar.Data.Api.Data;
 using Spydersoft.TechRadar.Data.Api.Services;
+using Spydersoft.TechRadar.Data.Api.Telemetry;
+using System.Diagnostics;
+using System.Diagnostics.Metrics;
 
 namespace Spydersoft.TechRadar.Data.Api.Tests.Services;
 
@@ -9,6 +14,8 @@ public class RadarServiceTests
 {
     private SqliteConnection _connection = null!;
     private DbContextOptions<TechRadarContext> _contextOptions = null!;
+    private TechRadarTelemetryMetrics _telemetry = null!;
+    private Mock<ITelemetryClient> _mockTelemetryClient = null!;
 
     [OneTimeSetUp]
     public void OneTimeSetup()
@@ -35,6 +42,11 @@ public class RadarServiceTests
             new Radar { Title = "Radar2", Description = "Second Radar"});
 
         context.SaveChanges();
+        
+        // Initialize telemetry with mocked ITelemetryClient
+        _mockTelemetryClient = new Mock<ITelemetryClient>();
+        
+        _telemetry = new TechRadarTelemetryMetrics(_mockTelemetryClient.Object);
     }
 
     private TechRadarContext CreateContext() => new(_contextOptions);
@@ -51,7 +63,7 @@ public class RadarServiceTests
     public async Task GetRadarList_Succeeds()
     {
         using var context = CreateContext();
-        var radarService = new RadarService(context);
+        var radarService = new RadarService(context, _telemetry);
 
         var radars = await radarService.GetRadarList();
         Assert.That(radars, Is.Not.Null);

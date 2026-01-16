@@ -1,10 +1,15 @@
 ﻿using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
+using Moq;
+using Spydersoft.Platform.Telemetry;
 using Spydersoft.TechRadar.Data.Api.Data;
 using Spydersoft.TechRadar.Data.Api.Models;
 using Spydersoft.TechRadar.Data.Api.Services;
+using Spydersoft.TechRadar.Data.Api.Telemetry;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.Diagnostics.Metrics;
 using System.Linq;
 using System.Security.Claims;
 using System.Text;
@@ -18,6 +23,8 @@ public class RadarDataItemServiceTests
     private SqliteConnection _connection = null!;
     private DbContextOptions<TechRadarContext> _contextOptions = null!;
     private ClaimsPrincipal _claimsPrincipal = null!;
+    private TechRadarTelemetryMetrics _telemetry = null!;
+    private Mock<ITelemetryClient> _mockTelemetryClient = null!;
 
     [OneTimeSetUp]
     public void OneTimeSetup()
@@ -52,6 +59,11 @@ public class RadarDataItemServiceTests
         };
         var identity = new ClaimsIdentity(claims, "TestAuthType");
         _claimsPrincipal = new ClaimsPrincipal(identity);
+        
+        // Initialize telemetry with mocked ITelemetryClient
+        _mockTelemetryClient = new Mock<ITelemetryClient>();
+        
+        _telemetry = new TechRadarTelemetryMetrics(_mockTelemetryClient.Object);
     }
 
     private TechRadarContext CreateContext() => new(_contextOptions);
@@ -69,7 +81,7 @@ public class RadarDataItemServiceTests
     {
         string newTitle = "Quadrant Create Test";
         using var context = CreateContext();
-        var radarService = new RadarDataItemService(context);
+        var radarService = new RadarDataItemService(context, _telemetry);
 
         // Act
         radarService.SaveRadarDataItem(new Radar
@@ -100,7 +112,7 @@ public class RadarDataItemServiceTests
     public async Task ExistingRadarItem_NoQuadrantsOrArcs()
     {
         using var context = CreateContext();
-        var radarService = new RadarDataItemService(context);
+        var radarService = new RadarDataItemService(context, _telemetry);
 
         Radar radar = await context.Radars.FirstAsync(r => r.Title == ExistingRadarName);
 
@@ -127,7 +139,7 @@ public class RadarDataItemServiceTests
     public void GetRadarDataItem_ExistingRadar_ReturnsRadar()
     {
         using var context = CreateContext();
-        var service = new RadarDataItemService(context);
+        var service = new RadarDataItemService(context, _telemetry);
 
         // Arrange
         var radar = context.Radars.First(r => r.Title == ExistingRadarName);
@@ -148,7 +160,7 @@ public class RadarDataItemServiceTests
     public void GetRadarDataItem_NonExistingId_ReturnsNull()
     {
         using var context = CreateContext();
-        var service = new RadarDataItemService(context);
+        var service = new RadarDataItemService(context, _telemetry);
 
         // Act
         var result = service.GetRadarDataItem<Radar>(999);
@@ -161,7 +173,7 @@ public class RadarDataItemServiceTests
     public void SaveRadarDataItem_NewQuadrant_CreatesQuadrant()
     {
         using var context = CreateContext();
-        var service = new RadarDataItemService(context);
+        var service = new RadarDataItemService(context, _telemetry);
         var radar = context.Radars.First();
 
         // Arrange
@@ -191,7 +203,7 @@ public class RadarDataItemServiceTests
     public void SaveRadarDataItem_UpdateExistingQuadrant_UpdatesProperties()
     {
         using var context = CreateContext();
-        var service = new RadarDataItemService(context);
+        var service = new RadarDataItemService(context, _telemetry);
         var radar = context.Radars.First();
 
         // Arrange - Create initial quadrant
@@ -230,7 +242,7 @@ public class RadarDataItemServiceTests
     public void SaveRadarDataItem_NewRadarItem_CreatesRadarItem()
     {
         using var context = CreateContext();
-        var service = new RadarDataItemService(context);
+        var service = new RadarDataItemService(context, _telemetry);
         var radar = context.Radars.First();
 
         // Arrange
@@ -264,7 +276,7 @@ public class RadarDataItemServiceTests
     public void SaveRadarDataItem_RadarItemWithNote_CreatesNote()
     {
         using var context = CreateContext();
-        var service = new RadarDataItemService(context);
+        var service = new RadarDataItemService(context, _telemetry);
         var radar = context.Radars.First();
 
         // Arrange
@@ -299,7 +311,7 @@ public class RadarDataItemServiceTests
     public void SaveRadarDataItem_UpdateRadarItemWithMovementDirection_CalculatesDirection()
     {
         using var context = CreateContext();
-        var service = new RadarDataItemService(context);
+        var service = new RadarDataItemService(context, _telemetry);
         var radar = context.Radars.First();
 
         // Arrange - Create radar with arcs first
@@ -343,7 +355,7 @@ public class RadarDataItemServiceTests
     public void DeleteRadarDataItem_ExistingQuadrant_RemovesQuadrant()
     {
         using var context = CreateContext();
-        var service = new RadarDataItemService(context);
+        var service = new RadarDataItemService(context, _telemetry);
         var radar = context.Radars.First();
 
         // Arrange - Create quadrant to delete
@@ -369,7 +381,7 @@ public class RadarDataItemServiceTests
     public void DeleteRadarDataItem_ExistingRadarItem_RemovesRadarItemAndTags()
     {
         using var context = CreateContext();
-        var service = new RadarDataItemService(context);
+        var service = new RadarDataItemService(context, _telemetry);
         var radar = context.Radars.First();
 
         // Arrange - Create radar item with tags to delete
@@ -410,7 +422,7 @@ public class RadarDataItemServiceTests
     public void DeleteRadarDataItem_NonExistingId_DoesNotThrow()
     {
         using var context = CreateContext();
-        var service = new RadarDataItemService(context);
+        var service = new RadarDataItemService(context, _telemetry);
 
         // Act & Assert
         Assert.DoesNotThrow(() => service.DeleteRadarDataItem<Radar>(999, _claimsPrincipal));
@@ -420,7 +432,7 @@ public class RadarDataItemServiceTests
     public void GetNotes_WithExistingNotes_ReturnsPagedNotes()
     {
         using var context = CreateContext();
-        var service = new RadarDataItemService(context);
+        var service = new RadarDataItemService(context, _telemetry);
         var radar = context.Radars.First();
 
         // Arrange - Create radar item and notes
@@ -475,7 +487,7 @@ public class RadarDataItemServiceTests
     public void GetNotes_WithNoNotes_ReturnsEmptyPagedList()
     {
         using var context = CreateContext();
-        var service = new RadarDataItemService(context);
+        var service = new RadarDataItemService(context, _telemetry);
         var radar = context.Radars.First();
 
         // Arrange - Create radar item without notes
@@ -509,7 +521,7 @@ public class RadarDataItemServiceTests
     public void GetNotes_SecondPage_ReturnsCorrectPage()
     {
         using var context = CreateContext();
-        var service = new RadarDataItemService(context);
+        var service = new RadarDataItemService(context, _telemetry);
         var radar = context.Radars.First();
 
         // Arrange - Create radar item and notes
