@@ -33,7 +33,7 @@ extends:
     gitVersionSpec: '6.0.x'
     buildProject: src/**/*.csproj
     publishProject: src/Spydersoft.TechRadar.Data.Api.csproj
-    netCoreVersion: '8.0.x'
+    netCoreVersion: '10.0.x'
     artifactName: techradarDataApi
     artifactZipName: Spydersoft.TechRadar.Data.Api
     dockerImageName: spydersoft-consulting/techradar-data-api
